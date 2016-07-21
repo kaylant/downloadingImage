@@ -25,14 +25,43 @@ class ViewController: UIViewController {
                 print(error)
                 
             } else {
-            
-                // create image from data that has been returned
-                if let jupiter = UIImage(data: data!) {
                 
-                    // update imageView with the image itself
-                    self.image.image = jupiter
+                // SAVING and image
+                // this will store the location of the documents folder to save the image
+                var documentsDirectory:String?
+                
+                // created an array of paths to the directory, the last boolean is refering to the ~
+                var paths:[AnyObject] = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+                
+                if paths.count > 0 {
+                    
+                    // THIS WORKFLOW saves the image to the phone and shows it from the phone
+                
+                    // location of where the image will be saved
+                    documentsDirectory = paths[0] as? String
+                    
+                    // exactly where the image will be saved
+                    let savePath = documentsDirectory! + "/jupiter.jpg"
+                    
+                    // saved the image to the file system within the phone
+                    NSFileManager.defaultManager().createFileAtPath(savePath, contents: data, attributes: nil)
+                    
+                    // removes error from running in background
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
+                        self.image.image = UIImage(named: savePath)
+                        
+//                        // create image from data that has been returned
+//                        if let jupiter = UIImage(data: data!) {
+//                            
+//                            // update imageView with the image itself
+//                            self.image.image = jupiter
+//                        }
+                        
+                    })
                 
                 }
+            
                 
             }
             
